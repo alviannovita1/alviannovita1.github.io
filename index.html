@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="jv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MPI Basa Jawa — Cerkak: Ukara Langsung &amp; Ora Langsung</title>
+<style>
+  :root{
+    --font-scale:1.0;
+    --c-teal:#0d9488;
+    --c-teal-dark:#0a6e64;
+    --c-sky:#0ea5e9;
+    --c-amber:#f59e0b;
+    --c-amber-dark:#b45309;
+    --c-maroon:#be123c;
+    --c-maroon-dark:#8f0f2f;
+    --c-cream:#fffaf0;
+    --c-ink:#1e293b;
+    --c-ink-light:#51617a;
+    --c-white:#ffffff;
+    --c-ok:#16a34a;
+    --c-bad:#dc2626;
+    --radius-lg:22px;
+    --radius-md:16px;
+    --radius-sm:10px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{
+    margin:0;padding:0;width:100%;height:100%;overflow:hidden;
+  }
+  body{
+    font-family:"Segoe UI","Trebuchet MS",Verdana,sans-serif;
+    color:var(--c-ink);
+    background:
+      linear-gradient(rgba(240,249,255,0.82),rgba(240,249,255,0.82)),
+      url('Latar_belakang_kelas.jpg') center/cover no-repeat fixed;
+    background-color:#f0f9ff;
+    display:flex;align-items:center;justify-content:center;
+  }
+  #outer-wrap{
+    width:100%;height:100%;
+    display:flex;align-items:center;justify-content:center;
+    padding:1.2vh 1.2vw;
+  }
+  #stage-16-9{
+    position:relative;
+    width:min(96vw, 170vh);
+    height:min(92vh, 96vw*9/16);
+    aspect-ratio:16/9;
+    max-height:96vh;
+    max-width:96vw;
+    background:transparent;
+    border:none;
+    box-shadow:none;
+    border-radius:0;
+    overflow:hidden;
+    font-size:calc(15px * var(--font-scale, 1.0));
+  }
+  .page{
+    position:absolute; inset:0;
+    display:none;
+    flex-direction:column;
+    padding:clamp(10px,1.8vh,18px) clamp(14px,2.2vw,26px);
+    overflow:hidden;
+  }
+  .page.active{display:flex;}
+  /* ---------- shared bits ---------- */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px; flex:0 0 auto;
+    margin-bottom:clamp(6px,1.2vh,12px);
+  }
+  .title-pill{
+    background:linear-gradient(135deg,var(--c-teal),var(--c-sky));
+    color:#fff; font-weight:800;
+    font-size:clamp(16px,2.2vh,22px);
+    padding:clamp(6px,1vh,10px) clamp(16px,2vw,26px);
+    border-radius:999px;
+    box-shadow:0 4px 10px rgba(13,148,136,0.35);
+    white-space:nowrap;
+  }
+  .nav-btns{display:flex;gap:8px;align-items:center;}
+  .icon-circle{
+    width:clamp(40px,5.2vh,48px);height:clamp(40px,5.2vh,48px);
+    border-radius:50%;
+    background:#fff;
+    border:2px solid var(--c-teal);
+    color:var(--c-teal-dark);
+    display:flex;align-items:center;justify-content:center;
+    font-size:clamp(18px,2.3vh,23px);
+    cursor:pointer;
+    box-shadow:0 3px 8px rgba(0,0,0,0.12);
+    transition:transform .15s ease;
+    user-select:none;
+  }
+  .icon-circle:active{transform:scale(0.9);}
+  .icon-circle.on{background:var(--c-teal);color:#fff;}
+  .zoom-group{display:flex;gap:4px;align-items:center;background:#fff;border-radius:999px;padding:4px 8px;box-shadow:0 3px 8px rgba(0,0,0,0.1);}
+  .zoom-group span{font-size:clamp(12px,1.5vh,14px);font-weight:700;color:var(--c-ink-light);padding:0 4px;}
+  .zoom-btn{
+    width:clamp(28px,3.6vh,34px);height:clamp(28px,3.6vh,34px);
+    border-radius:50%;border:none;background:var(--c-amber);color:#fff;
+    font-weight:900;font-size:clamp(14px,1.8vh,17px);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .content{flex:1 1 auto; min-height:0; display:flex; flex-direction:column;}
+  .brand-cap{
+    background:#fff;
+    border-radius:999px;
+    padding:clamp(5px,0.9vh,9px) clamp(14px,1.6vw,20px);
+    display:flex;align-items:center;gap:10px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.12);
+  }
+  .brand-cap img{height:clamp(50px,6.8vh,68px);width:auto;display:block;border-radius:8px;}
+  .brand-text{display:flex;flex-direction:column;line-height:1.15;}
+  .brand-text b{font-size:clamp(12px,1.6vh,15px);color:var(--c-teal-dark);}
+  .brand-text span{font-size:clamp(10px,1.3vh,12px);color:var(--c-ink-light);font-weight:600;}
+  .badge-row{display:flex;gap:8px;}
+  .badge-pill{
+    background:linear-gradient(135deg,var(--c-amber),var(--c-maroon));
+    color:#fff;font-weight:700;font-size:clamp(10px,1.3vh,12px);
+    padding:5px 12px;border-radius:999px;white-space:nowrap;
+  }
+
+  /* ---------- PAGE 1: COVER ---------- */
+  #page-cover{align-items:stretch;}
+  .cover-header{display:flex;justify-content:space-between;align-items:flex-start;flex:0 0 auto;}
+  .cover-mid{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:clamp(8px,1.6vh,16px);}
+  .cover-eyebrow{
+    font-size:clamp(13px,1.8vh,17px);font-weight:700;color:var(--c-maroon-dark);
+    background:#fff; padding:6px 18px;border-radius:999px;box-shadow:0 3px 8px rgba(0,0,0,0.1);
+  }
+  .cover-title{
+    font-size:clamp(2.8rem,6.8vw,5.2rem);
+    font-weight:900;
+    line-height:1.02;
+    color:var(--c-teal-dark);
+    text-shadow:
+      -4px -4px 0 #fff, 4px -4px 0 #fff, -4px 4px 0 #fff, 4px 4px 0 #fff,
+      0 8px 0 rgba(15,118,110,0.18);
+    margin:0;
+  }
+  .cover-sub{
+    font-size:clamp(1.4rem,3.2vw,2.6rem);
+    font-weight:800; color:var(--c-amber-dark);
+    margin:0;
+  }
+  .cover-desc{
+    font-size:clamp(13px,1.8vh,17px); font-weight:600; color:var(--c-ink);
+    max-width:70%;
+  }
+  .play-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:clamp(4px,1vh,10px);}
+  .play-btn{
+    width:clamp(60px,8.5vh,80px);height:clamp(60px,8.5vh,80px);
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #34d399, var(--c-teal) 70%);
+    color:#fff;border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    font-size:clamp(26px,3.6vh,36px);
+    box-shadow:0 0 0 0 rgba(13,148,136,0.6);
+    animation:pulseGlow 1.8s infinite;
+  }
+  @keyframes pulseGlow{
+    0%{box-shadow:0 0 0 0 rgba(13,148,136,0.55);}
+    70%{box-shadow:0 0 0 22px rgba(13,148,136,0);}
+    100%{box-shadow:0 0 0 0 rgba(13,148,136,0);}
+  }
+  .play-label{font-size:clamp(24px,3.8vh,36px);font-weight:900;color:var(--c-teal-dark);}
+  .cover-footer{
+    flex:0 0 auto; display:flex; justify-content:space-between; align-items:center;
+    background:rgba(255,255,255,0.75); border-radius:14px; padding:8px 16px;
+  }
+  .cover-footer .foot-l{font-size:clamp(11px,1.4vh,13px);font-weight:700;color:var(--c-ink);}
+  .cover-footer .foot-r{font-size:clamp(11px,1.4vh,13px);font-weight:600;color:var(--c-ink-light);font-style:italic;}
+
+  /* ---------- PAGE 2: MENU ---------- */
+  .menu-grid{
+    flex:1; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr);
+    gap:clamp(10px,1.6vh,18px);
+  }
+  .menu-card{
+    background:#fff; border-radius:var(--radius-lg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    gap:6px; padding:clamp(8px,1.2vh,14px);
+    cursor:pointer; border:none;
+    box-shadow:0 6px 0 rgba(0,0,0,0.08), 0 10px 18px rgba(0,0,0,0.08);
+    transition:transform .12s ease;
+    position:relative;
+  }
+  .menu-card:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,0.08),0 4px 8px rgba(0,0,0,0.1);}
+  .icon-box{
+    width:clamp(66px,9vh,88px); height:clamp(66px,9vh,88px);
+    border-radius:22px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:clamp(34px,4.8vh,46px);
+    color:#fff;
+    box-shadow:0 4px 10px rgba(0,0,0,0.18);
+  }
+  .ib-1{background:linear-gradient(135deg,#0d9488,#0ea5e9);}
+  .ib-2{background:linear-gradient(135deg,#f59e0b,#be123c);}
+  .ib-3{background:linear-gradient(135deg,#0ea5e9,#6366f1);}
+  .ib-4{background:linear-gradient(135deg,#be123c,#f472b6);}
+  .ib-5{background:linear-gradient(135deg,#0d9488,#22c55e);}
+  .ib-6{background:linear-gradient(135deg,#f59e0b,#fb923c);}
+  .menu-card h3{margin:0;font-size:clamp(15px,2vh,20px);font-weight:800;color:var(--c-ink);}
+  .menu-card p{margin:0;font-size:clamp(11px,1.4vh,13.5px);font-weight:600;color:var(--c-ink-light);line-height:1.3;}
+
+  /* ---------- generic card page (tujuan / materi / profil) ---------- */
+  .center-card{
+    flex:1; background:#fff; border-radius:var(--radius-lg);
+    box-shadow:0 8px 22px rgba(0,0,0,0.12);
+    display:flex; flex-direction:column; padding:clamp(14px,2.4vh,26px) clamp(18px,3vw,34px);
+    min-height:0;
+  }
+  .tp-head{display:flex;align-items:center;gap:12px;margin-bottom:clamp(8px,1.4vh,14px);flex:0 0 auto;}
+  .tp-head .icon-box{width:clamp(50px,7vh,64px);height:clamp(50px,7vh,64px);font-size:clamp(26px,3.6vh,34px);border-radius:16px;}
+  .tp-head h2{margin:0;font-size:clamp(18px,2.6vh,26px);font-weight:900;color:var(--c-teal-dark);}
+  .tp-head span{display:block;font-size:clamp(11px,1.4vh,13px);font-weight:600;color:var(--c-ink-light);}
+  .tp-list{list-style:none;margin:0;padding:0;flex:1;display:flex;flex-direction:column;justify-content:center;gap:clamp(8px,1.5vh,14px);}
+  .tp-list li{
+    display:flex;align-items:flex-start;gap:10px;
+    background:linear-gradient(90deg,#f0fdfa,#fff);
+    border-left:5px solid var(--c-teal);
+    border-radius:12px; padding:clamp(8px,1.2vh,12px) clamp(10px,1.5vw,16px);
+    font-size:clamp(13.5px,1.7vh,16px); font-weight:600; line-height:1.45;
+  }
+  .tp-list li .num{
+    flex:0 0 auto; width:clamp(26px,3.4vh,32px);height:clamp(26px,3.4vh,32px);
+    border-radius:50%; background:var(--c-teal); color:#fff; font-weight:800;
+    display:flex;align-items:center;justify-content:center;font-size:clamp(12px,1.5vh,15px);
+  }
+
+  /* ---------- PAGE 4: MATERI ---------- */
+  .materi-grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:clamp(8px,1.4vh,14px);min-height:0;}
+  .materi-card{
+    background:#fff;border-radius:var(--radius-md);
+    box-shadow:0 5px 14px rgba(0,0,0,0.1);
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .materi-visual{
+    flex:0 0 42%;
+    background:linear-gradient(135deg,#e0f2fe,#f0fdfa);
+    display:flex;align-items:center;justify-content:center;
+    font-size:clamp(30px,4.4vh,44px);
+  }
+  .materi-body{flex:1;padding:clamp(6px,1vh,10px) clamp(8px,1.2vw,12px);display:flex;flex-direction:column;gap:3px;min-height:0;}
+  .materi-body h4{margin:0;font-size:clamp(13px,1.7vh,17px);font-weight:800;color:var(--c-teal-dark);}
+  .materi-body p{margin:0;font-size:clamp(11px,1.45vh,13.5px);font-weight:600;color:var(--c-ink-light);line-height:1.35;overflow:hidden;}
+
+  /* ---------- PAGE 5: SIMULASI ---------- */
+  .sim-wrap{flex:1;display:flex;gap:clamp(10px,1.6vw,18px);min-height:0;}
+  .sim-left{flex:1.35;background:#fff;border-radius:var(--radius-lg);box-shadow:0 8px 18px rgba(0,0,0,0.1);display:flex;flex-direction:column;padding:clamp(8px,1.4vh,14px);min-height:0;}
+  .sim-right{flex:1;display:flex;flex-direction:column;gap:clamp(8px,1.2vh,12px);min-height:0;}
+  .sim-svg-box{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;}
+  .sim-controls{background:#fff;border-radius:var(--radius-md);box-shadow:0 6px 14px rgba(0,0,0,0.1);padding:clamp(8px,1.2vh,14px);display:flex;flex-direction:column;gap:8px;}
+  .sim-controls h4{margin:0;font-size:clamp(13px,1.7vh,16px);font-weight:800;color:var(--c-teal-dark);}
+  .sim-select-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .sim-chip{
+    border:2px solid var(--c-teal); background:#fff; color:var(--c-teal-dark);
+    font-weight:700; font-size:clamp(11px,1.4vh,13px); padding:6px 12px; border-radius:999px; cursor:pointer;
+  }
+  .sim-chip.active{background:var(--c-teal);color:#fff;}
+  .sim-status{
+    flex:1; background:linear-gradient(135deg,#fff7ed,#fef2f2); border-radius:var(--radius-md);
+    box-shadow:0 6px 14px rgba(0,0,0,0.08); padding:clamp(10px,1.5vh,16px);
+    display:flex; flex-direction:column; justify-content:center; gap:6px; min-height:0; overflow:hidden;
+  }
+  .sim-status .lab{font-size:clamp(10px,1.3vh,12px);font-weight:800;color:var(--c-amber-dark);text-transform:uppercase;letter-spacing:.5px;}
+  .sim-status .val{font-size:clamp(13px,1.65vh,16px);font-weight:700;color:var(--c-ink);line-height:1.4;}
+  .sim-status .val b{color:var(--c-maroon);}
+  .sim-btn{
+    align-self:flex-start; background:linear-gradient(135deg,var(--c-amber),var(--c-maroon));
+    color:#fff;border:none;border-radius:999px;font-weight:800;cursor:pointer;
+    font-size:clamp(13px,1.6vh,15px); padding:8px 20px;
+  }
+
+  /* ---------- PAGE 6: EVALUASI ---------- */
+  .eval-head{display:flex;align-items:center;justify-content:space-between;flex:0 0 auto;margin-bottom:6px;}
+  .eval-tabs{display:flex;gap:6px;}
+  .eval-tab{
+    padding:6px 14px;border-radius:999px;font-weight:800;font-size:clamp(11px,1.4vh,13px);
+    background:#fff;color:var(--c-ink-light);box-shadow:0 3px 8px rgba(0,0,0,0.1);
+  }
+  .eval-tab.done{background:var(--c-ok);color:#fff;}
+  .eval-tab.current{background:var(--c-teal);color:#fff;}
+  .eval-body{flex:1;min-height:0;display:flex;flex-direction:column;}
+  .round{flex:1;display:none;flex-direction:column;min-height:0;}
+  .round.active{display:flex;}
+  .q-box{background:#fff;border-radius:var(--radius-lg);box-shadow:0 8px 18px rgba(0,0,0,0.1);padding:clamp(12px,2vh,20px);flex:1;display:flex;flex-direction:column;gap:clamp(8px,1.4vh,14px);min-height:0;}
+  .q-count{font-size:clamp(11px,1.4vh,13px);font-weight:800;color:var(--c-amber-dark);}
+  .q-text{font-size:clamp(14px,1.9vh,18px);font-weight:800;color:var(--c-ink);line-height:1.4;}
+  .q-opts{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,1.2vh,12px);flex:1;}
+  .q-opt{
+    background:#f8fafc;border:2px solid #e2e8f0;border-radius:14px;
+    font-size:clamp(13.5px,1.8vh,17px);font-weight:700;color:var(--c-ink);
+    padding:10px 22px;cursor:pointer;text-align:left;display:flex;align-items:center;
+  }
+  .q-opt.correct{background:#dcfce7;border-color:var(--c-ok);color:#14532d;}
+  .q-opt.wrong{background:#fee2e2;border-color:var(--c-bad);color:#7f1d1d;}
+  .tf-row{display:flex;gap:16px;justify-content:center;flex:1;align-items:center;}
+  .tf-btn{
+    width:120px;height:70px;border-radius:16px;border:none;font-weight:900;font-size:clamp(16px,2.2vh,20px);color:#fff;cursor:pointer;
+  }
+  .tf-true{background:var(--c-ok);}
+  .tf-false{background:var(--c-bad);}
+  .match-area{flex:1;display:flex;justify-content:space-between;gap:6%;position:relative;min-height:0;}
+  .match-col{flex:1;display:flex;flex-direction:column;gap:clamp(6px,1.2vh,10px);justify-content:center;}
+  .match-item{
+    background:#f0f9ff;border:2px solid var(--c-sky);border-radius:12px;
+    padding:8px 14px;font-size:clamp(12px,1.6vh,14.5px);font-weight:700;color:var(--c-ink);
+    cursor:pointer;text-align:center;
+  }
+  .match-item.selected{background:var(--c-amber);color:#fff;border-color:var(--c-amber-dark);}
+  .match-item.matched{background:#dcfce7;border-color:var(--c-ok);color:#14532d;cursor:default;}
+  #matchSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+  .next-btn{
+    align-self:flex-end; background:var(--c-teal); color:#fff; border:none; border-radius:999px;
+    font-weight:800;font-size:clamp(13px,1.7vh,15px);padding:8px 22px;cursor:pointer;
+  }
+  .rekap-wrap{flex:1;display:flex;gap:clamp(12px,2vw,24px);align-items:center;justify-content:center;}
+  .trophy{font-size:clamp(44px,6vh,60px);filter:drop-shadow(0 4px 6px rgba(0,0,0,0.25));animation:bounceTrophy 1.4s infinite;}
+  @keyframes bounceTrophy{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+  .rekap-score{font-size:clamp(2.4rem,5vw,3.6rem);font-weight:900;color:var(--c-teal-dark);}
+  .rekap-detail{display:flex;flex-direction:column;gap:6px;font-size:clamp(12px,1.6vh,14.5px);font-weight:700;color:var(--c-ink);}
+  .rekap-detail div{display:flex;justify-content:space-between;gap:16px;min-width:220px;background:#f8fafc;border-radius:10px;padding:6px 12px;}
+  .reset-btn{background:var(--c-maroon);color:#fff;border:none;border-radius:999px;font-weight:800;padding:10px 24px;cursor:pointer;font-size:clamp(13px,1.7vh,15px);}
+
+  /* ---------- PAGE 7: PROFIL ---------- */
+  .profil-wrap{flex:1;display:flex;align-items:center;gap:clamp(18px,3vw,40px);}
+  .profil-photo-wrap{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .profil-photo{
+    width:clamp(130px,18vh,175px);height:clamp(130px,18vh,175px);border-radius:50%;
+    object-fit:cover;
+    border:5px solid transparent;
+    background:linear-gradient(#fff,#fff) padding-box, linear-gradient(135deg,var(--c-teal),var(--c-amber),var(--c-maroon)) border-box;
+    box-shadow:0 10px 20px rgba(0,0,0,0.25);
+  }
+  .profil-info{flex:1;display:flex;flex-direction:column;gap:6px;}
+  .profil-info h2{margin:0;font-size:clamp(20px,3vh,24px);font-weight:900;color:var(--c-teal-dark);}
+  .profil-info .role{font-size:clamp(13px,1.7vh,15px);font-weight:700;color:var(--c-amber-dark);}
+  .profil-info .school{font-size:clamp(13px,1.6vh,15px);font-weight:600;color:var(--c-ink-light);}
+  .profil-quote{
+    margin-top:8px; background:linear-gradient(135deg,#f0fdfa,#fff7ed); border-left:5px solid var(--c-amber);
+    border-radius:12px; padding:clamp(10px,1.6vh,16px); font-size:clamp(13px,1.65vh,16px); font-weight:700; font-style:italic; color:var(--c-ink);
+    line-height:1.4;
+  }
+
+  /* fact popup */
+  #factOverlay{
+    position:absolute;inset:0;background:rgba(15,23,42,0.55);
+    display:none;align-items:center;justify-content:center;z-index:50;
+  }
+  #factOverlay.show{display:flex;}
+  .fact-card{
+    background:#fff;border-radius:var(--radius-lg);padding:clamp(16px,2.6vh,26px);
+    max-width:70%;text-align:center;box-shadow:0 14px 30px rgba(0,0,0,0.3);
+    display:flex;flex-direction:column;gap:10px;align-items:center;
+  }
+  .fact-card .emoji{font-size:clamp(34px,5vh,50px);}
+  .fact-card p{margin:0;font-size:clamp(13.5px,1.8vh,17px);font-weight:700;color:var(--c-ink);line-height:1.4;}
+  .fact-close{background:var(--c-teal);color:#fff;border:none;border-radius:999px;padding:8px 22px;font-weight:800;cursor:pointer;font-size:clamp(12px,1.6vh,14px);}
+
+  ::-webkit-scrollbar{display:none;}
+</style>
+</head>
+<body>
+<div id="outer-wrap">
+<div id="stage-16-9">
+
+  <!-- ================= PAGE 1: COVER ================= -->
+  <div class="page active" id="page-cover">
+    <div class="cover-header">
+      <div class="brand-cap">
+        <img src="Logo_Sekolah.jpg" alt="Logo Sekolah" onerror="this.style.display='none'">
+        <div class="brand-text">
+          <b id="sekolahNameTop">SMP Negeri 1 Turi</b>
+          <span>Dinas Pendidikan • Kurikulum Merdeka</span>
+        </div>
+      </div>
+      <div class="badge-row">
+        <span class="badge-pill">Kurikulum Merdeka</span>
+        <span class="badge-pill">Fase D • Kelas VIII</span>
+      </div>
+    </div>
+    <div class="cover-mid">
+      <span class="cover-eyebrow">Media Pembelajaran Interaktif — Basa Jawa</span>
+      <h1 class="cover-title">Cerita Cekak</h1>
+      <h2 class="cover-sub">Ukara Langsung &amp; Ukara Ora Langsung</h2>
+      <p class="cover-desc">Ayo sinau nganalisis cerkak kanthi mbedakake ukara langsung lan ukara ora langsung supaya luwih mangerteni crita kanthi jangkep!</p>
+      <div class="play-wrap">
+        <button class="play-btn" onclick="sfxClick();goTo('menu')">▶</button>
+        <span class="play-label">MULAI</span>
+      </div>
+    </div>
+    <div class="cover-footer">
+      <span class="foot-l">Disusun dening: <span id="guruNameFoot">Alvian Novita Damayanti, S.Pd.</span> — <span id="sekolahNameFoot">SMP Negeri 1 Turi</span></span>
+      <span class="foot-r">"Basa Jawa, jati dhirine bangsa"</span>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 2: MENU ================= -->
+  <div class="page" id="page-menu">
+    <div class="topbar">
+      <div class="title-pill">📚 Menu Utama</div>
+      <div class="nav-btns">
+        <div class="zoom-group">
+          <button class="zoom-btn" onclick="changeFont(-1)">A-</button>
+          <span>Huruf</span>
+          <button class="zoom-btn" onclick="changeFont(1)">A+</button>
+        </div>
+        <div class="icon-circle on" id="soundBtnMenu" onclick="toggleSound()">🔊</div>
+        <div class="icon-circle" onclick="sfxClick();goTo('cover')">🏠</div>
+      </div>
+    </div>
+    <div class="menu-grid">
+      <button class="menu-card" onclick="sfxClick();goTo('tujuan')">
+        <div class="icon-box ib-1">🎯</div>
+        <h3>Tujuan Pembelajaran</h3>
+        <p>Capaian &amp; indikator kompetensi siswa</p>
+      </button>
+      <button class="menu-card" onclick="sfxClick();goTo('materi')">
+        <div class="icon-box ib-2">📖</div>
+        <h3>Materi Pembelajaran</h3>
+        <p>Konsep kunci cerkak lan ukara langsung/ora langsung</p>
+      </button>
+      <button class="menu-card" onclick="sfxClick();goTo('simulasi')">
+        <div class="icon-box ib-3">🕹️</div>
+        <h3>Simulasi Interaktif</h3>
+        <p>Latihan ngowahi ukara kanthi visual</p>
+      </button>
+      <button class="menu-card" onclick="sfxClick();goTo('evaluasi')">
+        <div class="icon-box ib-4">📝</div>
+        <h3>Evaluasi Multi-Format</h3>
+        <p>3 jinis soal, total 100 poin</p>
+      </button>
+      <button class="menu-card" onclick="sfxClick();goTo('profil')">
+        <div class="icon-box ib-5">👨‍🏫</div>
+        <h3>Profil Guru</h3>
+        <p>Informasi fasilitator pendidik</p>
+      </button>
+      <button class="menu-card" onclick="sfxClick();showFact()">
+        <div class="icon-box ib-6">💡</div>
+        <h3>Wawasan &amp; Fakta</h3>
+        <p>Fakta narik babagan cerkak Jawa</p>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 3: TUJUAN ================= -->
+  <div class="page" id="page-tujuan">
+    <div class="topbar">
+      <div class="title-pill">🎯 Tujuan Pembelajaran</div>
+      <div class="nav-btns">
+        <div class="icon-circle" onclick="sfxClick();goTo('menu')">↩</div>
+        <div class="icon-circle" onclick="sfxClick();goTo('cover')">🏠</div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="center-card">
+        <div class="tp-head">
+          <div class="icon-box ib-1" style="width:clamp(50px,7vh,64px);height:clamp(50px,7vh,64px);font-size:clamp(26px,3.6vh,34px);border-radius:16px;">🎯</div>
+          <div>
+            <h2>Tujuan &amp; Indikator Capaian</h2>
+            <span>Basa Jawa • Fase D — Kelas VIII SMP • Materi: Cerita Cekak</span>
+          </div>
+        </div>
+        <ul class="tp-list">
+          <li><span class="num">1</span> Siswa saged mbedakake titikan (ciri-ciri) ukara langsung lan ukara ora langsung ing sajroning teks cerkak kanthi tliti.</li>
+          <li><span class="num">2</span> Siswa saged nemtokake lan nuduhake pethikan ukara langsung tuwin ukara ora langsung ing teks cerkak kanthi tepat.</li>
+          <li><span class="num">3</span> Siswa saged ngowahi ukara langsung dadi ukara ora langsung (utawa kosok-baline) kanthi nggatekake owahing tembung ganti wong.</li>
+          <li><span class="num">4</span> Siswa saged nganalisis cerkak adhedhasar panganggone ukara langsung lan ora langsung kanggo mangerteni isi crita kanthi jangkep.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 4: MATERI ================= -->
+  <div class="page" id="page-materi">
+    <div class="topbar">
+      <div class="title-pill">📖 Materi Pembelajaran</div>
+      <div class="nav-btns">
+        <div class="icon-circle" onclick="sfxClick();goTo('menu')">↩</div>
+        <div class="icon-circle" onclick="sfxClick();goTo('cover')">🏠</div>
+      </div>
+    </div>
+    <div class="materi-grid">
+      <div class="materi-card">
+        <div class="materi-visual" style="background:linear-gradient(135deg,#ccfbf1,#f0fdfa);">📔</div>
+        <div class="materi-body"><h4>Pangertosan Cerkak</h4><p>Cerkak (cerita cekak) yaiku karya sastra fiksi kang ringkes, nyritakake sapérangan kadadeyan bab paraga kanthi ceplas-ceplos lan gancang rampung.</p></div>
+      </div>
+      <div class="materi-card">
+        <div class="materi-visual" style="background:linear-gradient(135deg,#fef3c7,#fff7ed);">🧩</div>
+        <div class="materi-body"><h4>Unsur-Unsur Cerkak</h4><p>Tema, alur, paraga (tokoh), latar (papan/wektu), sudut pandang, lan amanat — kabeh nyawiji mbangun crita kang wutuh.</p></div>
+      </div>
+      <div class="materi-body-wrap" style="display:contents;">
+      <div class="materi-card">
+        <div class="materi-visual" style="background:linear-gradient(135deg,#e0f2fe,#eff6ff);">💬</div>
+        <div class="materi-body"><h4>Ukara Langsung</h4><p>Ukara sing nirokake pangucape paraga persis kaya aslinipun, dijepit tandha pethik ("...") lan asring didhisiki tembung "ngendika", "matur", "ngucap".</p></div>
+      </div>
+      </div>
+      <div class="materi-card">
+        <div class="materi-visual" style="background:linear-gradient(135deg,#fce7f3,#fdf2f8);">🔄</div>
+        <div class="materi-body"><h4>Ukara Ora Langsung</h4><p>Ukara sing nyritakake maneh ature paraga tanpa tandha pethik, tembung ganti wong owah (aku→dhèwèké), biasane nganggo tembung "yèn"/"menawa".</p></div>
+      </div>
+      <div class="materi-card">
+        <div class="materi-visual" style="background:linear-gradient(135deg,#dcfce7,#f0fdf4);">🔍</div>
+        <div class="materi-body"><h4>Titikan Pembeda</h4><p>Ukara langsung: tandha pethik + intonasi persis. Ukara ora langsung: tanpa tandha pethik, kata ganti owah, ana tembung panyambung "yèn".</p></div>
+      </div>
+      <div class="materi-card">
+        <div class="materi-visual" style="background:linear-gradient(135deg,#ffe4e6,#fff1f2);">✍️</div>
+        <div class="materi-body"><h4>Cara Ngowahi Ukara</h4><p>1) Ilangi tandha pethik, 2) Tambahi tembung "yèn", 3) Owahi tembung ganti wong sing trep, 4) Selarasake tembung wektu yèn perlu.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 5: SIMULASI ================= -->
+  <div class="page" id="page-simulasi">
+    <div class="topbar">
+      <div class="title-pill">🕹️ Simulasi: Owahana Ukara</div>
+      <div class="nav-btns">
+        <div class="icon-circle" onclick="sfxClick();goTo('menu')">↩</div>
+        <div class="icon-circle" onclick="sfxClick();goTo('cover')">🏠</div>
+      </div>
+    </div>
+    <div class="sim-wrap">
+      <div class="sim-left">
+        <div class="sim-svg-box" id="simSvgBox"></div>
+      </div>
+      <div class="sim-right">
+        <div class="sim-controls">
+          <h4>Pilih conto ukara:</h4>
+          <div class="sim-select-row" id="simChipRow"></div>
+        </div>
+        <div class="sim-status">
+          <span class="lab">Ukara Langsung</span>
+          <span class="val" id="simLangsung"></span>
+          <span class="lab" style="margin-top:6px;">Ukara Ora Langsung</span>
+          <span class="val" id="simOraLangsung"></span>
+        </div>
+        <button class="sim-btn" onclick="sfxClick();simToggle()">🔁 Owahi Ukara</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 6: EVALUASI ================= -->
+  <div class="page" id="page-evaluasi">
+    <div class="eval-head">
+      <div class="title-pill">📝 Evaluasi Multi-Format</div>
+      <div class="eval-tabs">
+        <span class="eval-tab current" id="tab-A">A · PG</span>
+        <span class="eval-tab" id="tab-B">B · Jodoh</span>
+        <span class="eval-tab" id="tab-C">C · B/S</span>
+        <span class="eval-tab" id="tab-D">D · Skor</span>
+      </div>
+      <div class="nav-btns">
+        <div class="icon-circle" onclick="sfxClick();goTo('menu')">↩</div>
+        <div class="icon-circle" onclick="sfxClick();goTo('cover')">🏠</div>
+      </div>
+    </div>
+    <div class="eval-body">
+      <!-- ROUND A -->
+      <div class="round active" id="round-A">
+        <div class="q-box">
+          <span class="q-count" id="qCountA">Soal 1 saka 3 • Babak A (Pilihan Ganda)</span>
+          <span class="q-text" id="qTextA"></span>
+          <div class="q-opts" id="qOptsA"></div>
+        </div>
+      </div>
+      <!-- ROUND B -->
+      <div class="round" id="round-B">
+        <div class="q-box">
+          <span class="q-count">Babak B • Jodhokna istilah karo tegesipun (klik kiwa banjur tengen)</span>
+          <div class="match-area" id="matchArea">
+            <div class="match-col" id="matchLeft"></div>
+            <svg id="matchSvg"></svg>
+            <div class="match-col" id="matchRight"></div>
+          </div>
+          <button class="next-btn" id="btnNextB" style="display:none;" onclick="sfxClick();startRoundC()">Terusake ➜</button>
+        </div>
+      </div>
+      <!-- ROUND C -->
+      <div class="round" id="round-C">
+        <div class="q-box">
+          <span class="q-count" id="qCountC">Pernyataan 1 saka 3 • Babak C (Bener/Salah)</span>
+          <span class="q-text" id="qTextC"></span>
+          <div class="tf-row">
+            <button class="tf-btn tf-true" onclick="answerTF(true)">✓ BENER</button>
+            <button class="tf-btn tf-false" onclick="answerTF(false)">✗ SALAH</button>
+          </div>
+        </div>
+      </div>
+      <!-- ROUND D -->
+      <div class="round" id="round-D">
+        <div class="q-box">
+          <div class="rekap-wrap">
+            <div class="trophy">🏆</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+              <span class="rekap-score" id="rekapTotal">0</span>
+              <div class="rekap-detail">
+                <div><span>Babak A (Pilihan Ganda)</span><b id="rekapA">0 / 30</b></div>
+                <div><span>Babak B (Menjodohkan)</span><b id="rekapB">0 / 40</b></div>
+                <div><span>Babak C (Bener/Salah)</span><b id="rekapC">0 / 30</b></div>
+              </div>
+              <button class="reset-btn" onclick="sfxClick();resetEval()">🔄 Baleni Maneh</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 7: PROFIL ================= -->
+  <div class="page" id="page-profil">
+    <div class="topbar">
+      <div class="title-pill">👨‍🏫 Profil Guru</div>
+      <div class="nav-btns">
+        <div class="icon-circle" onclick="sfxClick();goTo('menu')">↩</div>
+        <div class="icon-circle" onclick="sfxClick();goTo('cover')">🏠</div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="center-card">
+        <div class="profil-wrap">
+          <div class="profil-photo-wrap">
+            <img class="profil-photo" src="Foto_Profil_Guru.JPG" alt="Foto Guru" onerror="this.style.display='none'">
+          </div>
+          <div class="profil-info">
+            <h2 id="guruNameMain">Alvian Novita Damayanti, S.Pd.</h2>
+            <span class="role">Guru Mata Pelajaran Basa Jawa</span>
+            <span class="school" id="sekolahNameProfil">SMP Negeri 1 Turi</span>
+            <div class="profil-quote">"Basa Jawa iku jati dhirine bangsa. Lumantar cerkak, siswa sinau ngajèni tata krama lan luwih trampil migunakake basa kanthi apik lan bener." — Motivasi Pendidikan</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FACT POPUP -->
+  <div id="factOverlay" onclick="hideFact(event)">
+    <div class="fact-card" onclick="event.stopPropagation()">
+      <div class="emoji">💡</div>
+      <p id="factText">Ngerti ora? Tembung "cerkak" iku cekakan saka "cerita cekak", padha karo "cerpen" ing Basa Indonesia!</p>
+      <button class="fact-close" onclick="sfxClick();hideFact()">Ngerti, Matur Nuwun!</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+/* ===================== DATA IDENTITAS (Bagian 1) ===================== */
+const IDENTITAS = {
+  sekolah: "SMP Negeri 1 Turi",
+  guru: "Alvian Novita Damayanti, S.Pd."
+};
+
+/* ===================== NAVIGASI ===================== */
+function goTo(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+}
+
+/* ===================== FONT SCALE ===================== */
+let fontScale = 1.0;
+function changeFont(dir){
+  fontScale = Math.max(0.8, Math.min(1.3, fontScale + dir*0.1));
+  document.getElementById('stage-16-9').style.setProperty('--font-scale', fontScale);
+  sfxClick();
+}
+
+/* ===================== AUDIO SINTETIS (Web Audio API) ===================== */
+let soundOn = true;
+let actx = null;
+function getCtx(){
+  if(!actx){ actx = new (window.AudioContext || window.webkitAudioContext)(); }
+  return actx;
+}
+function toggleSound(){
+  soundOn = !soundOn;
+  const btn = document.getElementById('soundBtnMenu');
+  btn.textContent = soundOn ? '🔊' : '🔇';
+  btn.classList.toggle('on', soundOn);
+}
+function playTone(freq, dur, type, delay, gain){
+  if(!soundOn) return;
+  try{
+    const ctx = getCtx();
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.value = freq;
+    g.gain.value = gain||0.12;
+    osc.connect(g); g.connect(ctx.destination);
+    const t0 = ctx.currentTime + (delay||0);
+    osc.start(t0);
+    g.gain.setValueAtTime(g.gain.value, t0);
+    g.gain.exponentialRampToValueAtTime(0.001, t0+dur);
+    osc.stop(t0+dur+0.02);
+  }catch(e){}
+}
+function sfxClick(){
+  if(!soundOn) return;
+  try{
+    const ctx = getCtx();
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type='triangle';
+    const t0 = ctx.currentTime;
+    osc.frequency.setValueAtTime(450, t0);
+    osc.frequency.exponentialRampToValueAtTime(880, t0+0.09);
+    g.gain.value=0.1;
+    osc.connect(g); g.connect(ctx.destination);
+    osc.start(t0);
+    g.gain.exponentialRampToValueAtTime(0.001, t0+0.11);
+    osc.stop(t0+0.13);
+  }catch(e){}
+}
+function sfxCorrect(){
+  playTone(523.25,0.35,'sine',0,0.13);
+  playTone(659.25,0.35,'sine',0.09,0.13);
+  playTone(783.99,0.45,'sine',0.18,0.13);
+}
+function sfxWrong(){
+  playTone(180,0.4,'sawtooth',0,0.13);
+  playTone(140,0.5,'sawtooth',0.08,0.13);
+}
+
+/* ===================== FAKTA POP-UP ===================== */
+const FACTS = [
+  "Ngerti ora? Tembung 'cerkak' iku cekakan saka 'cerita cekak', padha karo 'cerpen' ing Basa Indonesia!",
+  "Ukara langsung nduweni fungsi ngasilake kesan 'urip' lan nyata amarga nirokake persis pangucape paraga.",
+  "Panganggone ukara ora langsung ngirit tandha waca, nanging tetep kudu ngati-ati ngowahi tembung ganti wong.",
+  "Sastrawan Jawa kaya Suparto Brata kondhang nulis cerkak-cerkak sing populer ing basa Jawa modheren."
+];
+function showFact(){
+  document.getElementById('factText').textContent = FACTS[Math.floor(Math.random()*FACTS.length)];
+  document.getElementById('factOverlay').classList.add('show');
+}
+function hideFact(e){
+  document.getElementById('factOverlay').classList.remove('show');
+}
+
+/* ===================== SIMULASI: OWAHANA UKARA ===================== */
+const SIM_DATA = [
+  {
+    langsung: 'Bu Guru ngendika, "Sesuk esuk kita tindak menyang Museum Wayang."',
+    oraLangsung: "Bu Guru ngendika yèn sesuk esuk dhèwèké tindak menyang Museum Wayang.",
+    ganti:[["kita","dhèwèké"]]
+  },
+  {
+    langsung: 'Sinta matur, "Aku wis rampung nggarap tugas basa Jawa."',
+    oraLangsung: "Sinta matur yèn dhèwèké wis rampung nggarap tugas basa Jawa.",
+    ganti:[["aku","dhèwèké"]]
+  },
+  {
+    langsung: 'Bapak ngendika, "Kowe kudu sinau kanthi tenanan."',
+    oraLangsung: "Bapak ngendika yèn aku kudu sinau kanthi tenanan.",
+    ganti:[["kowe","aku"]]
+  },
+  {
+    langsung: 'Rina takon, "Kapan kowe teka menyang omahku?"',
+    oraLangsung: "Rina takon kapan aku teka menyang omahé.",
+    ganti:[["kowe","aku"],["omahku","omahé"]]
+  }
+];
+let simIndex = 0;
+let simShowIndirect = false;
+
+function renderSimChips(){
+  const row = document.getElementById('simChipRow');
+  row.innerHTML='';
+  SIM_DATA.forEach((d,i)=>{
+    const chip = document.createElement('button');
+    chip.className = 'sim-chip' + (i===simIndex?' active':'');
+    chip.textContent = 'Conto ' + (i+1);
+    chip.onclick = ()=>{ sfxClick(); simIndex=i; simShowIndirect=false; renderSim(); };
+    row.appendChild(chip);
+  });
+}
+function simToggle(){
+  simShowIndirect = !simShowIndirect;
+  if(simShowIndirect) sfxCorrect(); else sfxClick();
+  renderSim();
+}
+function renderSim(){
+  renderSimChips();
+  const d = SIM_DATA[simIndex];
+  document.getElementById('simLangsung').innerHTML = d.langsung.replace(/"([^"]+)"/, '<b>"$1"</b>');
+  document.getElementById('simOraLangsung').innerHTML = simShowIndirect ? d.oraLangsung : '<span style="opacity:.4">— klik "Owahi Ukara" kanggo ndeleng asile —</span>';
+  drawSimSvg(d, simShowIndirect);
+}
+function drawSimSvg(d, showResult){
+  const box = document.getElementById('simSvgBox');
+  const arrowColor = showResult ? '#0d9488' : '#94a3b8';
+  const svg = `
+  <svg viewBox="0 0 560 340" style="width:100%;height:clamp(260px,38vh,420px);" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+        <polygon points="0 0, 10 4, 0 8" fill="${arrowColor}"/>
+      </marker>
+    </defs>
+    <!-- kotak ukara langsung -->
+    <rect x="20" y="30" width="230" height="120" rx="18" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="4"/>
+    <rect x="40" y="42" width="130" height="24" rx="6" fill="white" stroke="#0ea5e9" stroke-width="1.5"/>
+    <text x="105" y="59" font-size="14" font-weight="800" text-anchor="middle" fill="#0369a1">UKARA LANGSUNG</text>
+    <text x="135" y="100" font-size="34" text-anchor="middle" fill="#0ea5e9" font-weight="800">" "</text>
+    <text x="135" y="130" font-size="13" text-anchor="middle" fill="#0369a1" font-weight="700">tandha pethik persis</text>
+
+    <!-- panah -->
+    <path d="M 250 90 Q 300 90 320 90" stroke="${arrowColor}" stroke-width="6" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="${showResult?'0':'8 6'}">
+      ${showResult?'':'<animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/>'}
+    </path>
+    <rect x="255" y="105" width="110" height="24" rx="6" fill="white" stroke="${arrowColor}" stroke-width="1.5"/>
+    <text x="310" y="122" font-size="13" font-weight="800" text-anchor="middle" fill="${showResult?'#0d9488':'#64748b'}">diowahi dadi</text>
+
+    <!-- kotak ukara ora langsung -->
+    <rect x="320" y="30" width="220" height="120" rx="18" fill="${showResult?'#fce7f3':'#f1f5f9'}" stroke="${showResult?'#be123c':'#94a3b8'}" stroke-width="4"/>
+    <rect x="340" y="42" width="170" height="24" rx="6" fill="white" stroke="${showResult?'#be123c':'#94a3b8'}" stroke-width="1.5"/>
+    <text x="425" y="59" font-size="13" font-weight="800" text-anchor="middle" fill="${showResult?'#9f1239':'#475569'}">UKARA ORA LANGSUNG</text>
+    <text x="430" y="105" font-size="30" text-anchor="middle" fill="${showResult?'#be123c':'#94a3b8'}" font-weight="800">yèn ...</text>
+    <text x="430" y="130" font-size="13" text-anchor="middle" fill="${showResult?'#9f1239':'#475569'}" font-weight="700">tanpa tandha pethik</text>
+
+    <!-- kata ganti box -->
+    <rect x="60" y="190" width="440" height="120" rx="18" fill="#fff7ed" stroke="#f59e0b" stroke-width="4"/>
+    <rect x="80" y="202" width="220" height="24" rx="6" fill="white" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="190" y="219" font-size="13" font-weight="800" text-anchor="middle" fill="#b45309">OWAHAN TEMBUNG GANTI WONG</text>
+    ${d.ganti.map((g,i)=>`
+      <rect x="${90+i*220}" y="240" width="90" height="34" rx="8" fill="white" stroke="#0ea5e9" stroke-width="2"/>
+      <text x="${135+i*220}" y="262" font-size="14" font-weight="800" text-anchor="middle" fill="#0369a1">${g[0]}</text>
+      <path d="M ${185+i*220} 257 L ${225+i*220} 257" stroke="#f59e0b" stroke-width="4" marker-end="url(#arrowhead)"/>
+      <rect x="${230+i*220}" y="240" width="100" height="34" rx="8" fill="white" stroke="#be123c" stroke-width="2"/>
+      <text x="${280+i*220}" y="262" font-size="14" font-weight="800" text-anchor="middle" fill="#9f1239">${g[1]}</text>
+    `).join('')}
+    <circle cx="80" cy="257" r="14" fill="${showResult?'#16a34a':'#cbd5e1'}">
+      ${showResult?'<animate attributeName="r" values="12;16;12" dur="1.2s" repeatCount="indefinite"/>':''}
+    </circle>
+  </svg>`;
+  box.innerHTML = svg;
+}
+
+/* ===================== EVALUASI DATA ===================== */
+const QUIZ_A = [
+  {q:'Titikan (ciri) ukara langsung yaiku ...', opts:['Nganggo tandha pethik ("...")','Nganggo tembung "yèn"','Ora ana paraga sing ngendika','Mung ana ing pawarta'], correct:0},
+  {q:'Ukara \'Bapak ngendika, "Sesuk kita tindak menyang sawah."\' yèn diowahi dadi ukara ora langsung dadi ...', opts:['Bapak ngendika yèn sesuk dhèwèké arep tindak menyang sawah','Bapak ngendika, "Sesuk kita tindak menyang sawah."','Sawah iku papan kanggo tandur pari','Sesuk bapak ora tindak menyang sawah'], correct:0},
+  {q:'Tembung ganti wong sing lumrah owah nalika ukara langsung diowahi dadi ora langsung yaiku ...', opts:['aku dadi dhèwèké','sesuk dadi wingi','ing dadi saka','lan dadi utawa'], correct:0}
+];
+const QUIZ_C = [
+  {q:'Ukara langsung mesthi nganggo tandha pethik.', correct:true},
+  {q:'Ukara ora langsung isih nganggo tandha pethik kaya ukara langsung.', correct:false},
+  {q:'Nalika ngowahi ukara langsung dadi ora langsung, tembung ganti wong bisa owah.', correct:true}
+];
+const MATCH_PAIRS = [
+  {term:'Ukara Langsung', def:'Ukara sing nirokake pangucape paraga persis, nganggo tandha pethik'},
+  {term:'Ukara Ora Langsung', def:'Ukara sing nyritakake maneh ature paraga tanpa tandha pethik'},
+  {term:'Tembung Ganti Wong', def:'Tembung sing owah nalika ukara diowahi (aku dadi dhèwèké)'},
+  {term:'Cerkak', def:'Karya sastra fiksi kang ringkes lan gancang rampung'}
+];
+
+let scoreA=0, scoreB=0, scoreC=0;
+let curA=0, curC=0;
+let matchLeftSel = null;
+let matchedCount = 0;
+
+function startRoundA(){
+  scoreA=0; curA=0;
+  document.getElementById('round-A').classList.add('active');
+  document.getElementById('round-B').classList.remove('active');
+  document.getElementById('round-C').classList.remove('active');
+  document.getElementById('round-D').classList.remove('active');
+  document.getElementById('tab-A').classList.add('current');
+  document.getElementById('tab-B').classList.remove('current','done');
+  document.getElementById('tab-C').classList.remove('current','done');
+  document.getElementById('tab-D').classList.remove('current','done');
+  renderQuizA();
+}
+function renderQuizA(){
+  const item = QUIZ_A[curA];
+  document.getElementById('qCountA').textContent = 'Soal '+(curA+1)+' saka '+QUIZ_A.length+' • Babak A (Pilihan Ganda)';
+  document.getElementById('qTextA').textContent = item.q;
+  const optsBox = document.getElementById('qOptsA');
+  optsBox.innerHTML='';
+  item.opts.forEach((opt,i)=>{
+    const b = document.createElement('button');
+    b.className='q-opt';
+    b.textContent = opt;
+    b.onclick = ()=>answerA(i,b);
+    optsBox.appendChild(b);
+  });
+}
+function answerA(i, btnEl){
+  const item = QUIZ_A[curA];
+  const allBtns = document.querySelectorAll('#qOptsA .q-opt');
+  allBtns.forEach(b=>b.onclick=null);
+  if(i===item.correct){
+    btnEl.classList.add('correct'); sfxCorrect(); scoreA += 10;
+  } else {
+    btnEl.classList.add('wrong'); sfxWrong();
+    allBtns[item.correct].classList.add('correct');
+  }
+  setTimeout(()=>{
+    curA++;
+    if(curA < QUIZ_A.length){ renderQuizA(); }
+    else { document.getElementById('tab-A').classList.remove('current'); document.getElementById('tab-A').classList.add('done'); startRoundB(); }
+  }, 900);
+}
+
+function startRoundB(){
+  document.getElementById('round-A').classList.remove('active');
+  document.getElementById('round-B').classList.add('active');
+  document.getElementById('tab-B').classList.add('current');
+  scoreB=0; matchedCount=0; matchLeftSel=null;
+  document.getElementById('btnNextB').style.display='none';
+  const leftCol = document.getElementById('matchLeft');
+  const rightCol = document.getElementById('matchRight');
+  leftCol.innerHTML=''; rightCol.innerHTML='';
+  document.getElementById('matchSvg').innerHTML='';
+  const shuffledDefs = [...MATCH_PAIRS].sort(()=>Math.random()-0.5);
+  MATCH_PAIRS.forEach((p,i)=>{
+    const li = document.createElement('div');
+    li.className='match-item'; li.textContent=p.term; li.dataset.pair=i; li.id='term-'+i;
+    li.onclick=()=>selectTerm(li);
+    leftCol.appendChild(li);
+  });
+  shuffledDefs.forEach((p)=>{
+    const idx = MATCH_PAIRS.indexOf(p);
+    const li = document.createElement('div');
+    li.className='match-item'; li.textContent=p.def; li.dataset.pair=idx; li.id='def-'+idx;
+    li.onclick=()=>selectDef(li);
+    rightCol.appendChild(li);
+  });
+}
+function selectTerm(el){
+  if(el.classList.contains('matched')) return;
+  document.querySelectorAll('#matchLeft .match-item').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  matchLeftSel = el;
+  sfxClick();
+}
+function selectDef(el){
+  if(el.classList.contains('matched') || !matchLeftSel) return;
+  sfxClick();
+  if(matchLeftSel.dataset.pair === el.dataset.pair){
+    matchLeftSel.classList.add('matched'); matchLeftSel.classList.remove('selected');
+    el.classList.add('matched');
+    drawMatchLine(matchLeftSel, el);
+    matchedCount++; scoreB += 10;
+    sfxCorrect();
+    matchLeftSel = null;
+    if(matchedCount === MATCH_PAIRS.length){
+      document.getElementById('btnNextB').style.display='inline-block';
+    }
+  } else {
+    sfxWrong();
+    el.style.background='#fee2e2';
+    setTimeout(()=>{ el.style.background=''; },400);
+    matchLeftSel.classList.remove('selected');
+    matchLeftSel = null;
+  }
+}
+function drawMatchLine(leftEl, rightEl){
+  const area = document.getElementById('matchArea').getBoundingClientRect();
+  const l = leftEl.getBoundingClientRect();
+  const r = rightEl.getBoundingClientRect();
+  const x1 = l.right - area.left, y1 = l.top + l.height/2 - area.top;
+  const x2 = r.left - area.left, y2 = r.top + r.height/2 - area.top;
+  const svg = document.getElementById('matchSvg');
+  const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+  line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+  line.setAttribute('x2',x1); line.setAttribute('y2',y1);
+  line.setAttribute('stroke','#16a34a'); line.setAttribute('stroke-width','4'); line.setAttribute('stroke-linecap','round');
+  svg.appendChild(line);
+  let t=0;
+  const anim = setInterval(()=>{
+    t += 0.12;
+    if(t>=1){ t=1; clearInterval(anim); }
+    line.setAttribute('x2', x1 + (x2-x1)*t);
+    line.setAttribute('y2', y1 + (y2-y1)*t);
+  },16);
+}
+
+function startRoundC(){
+  document.getElementById('round-B').classList.remove('active');
+  document.getElementById('round-C').classList.add('active');
+  document.getElementById('tab-B').classList.remove('current'); document.getElementById('tab-B').classList.add('done');
+  document.getElementById('tab-C').classList.add('current');
+  scoreC=0; curC=0;
+  renderQuizC();
+}
+function renderQuizC(){
+  document.getElementById('qCountC').textContent = 'Pernyataan '+(curC+1)+' saka '+QUIZ_C.length+' • Babak C (Bener/Salah)';
+  document.getElementById('qTextC').textContent = QUIZ_C[curC].q;
+  document.querySelectorAll('.tf-btn').forEach(b=>{ b.disabled=false; b.style.opacity=1; });
+}
+function answerTF(val){
+  const item = QUIZ_C[curC];
+  document.querySelectorAll('.tf-btn').forEach(b=>b.disabled=true);
+  if(val === item.correct){ sfxCorrect(); scoreC += 10; }
+  else { sfxWrong(); }
+  setTimeout(()=>{
+    curC++;
+    if(curC < QUIZ_C.length){ renderQuizC(); }
+    else { document.getElementById('tab-C').classList.remove('current'); document.getElementById('tab-C').classList.add('done'); startRoundD(); }
+  }, 700);
+}
+
+function startRoundD(){
+  document.getElementById('round-C').classList.remove('active');
+  document.getElementById('round-D').classList.add('active');
+  document.getElementById('tab-D').classList.add('current');
+  const total = scoreA + scoreB + scoreC;
+  document.getElementById('rekapA').textContent = scoreA + ' / 30';
+  document.getElementById('rekapB').textContent = scoreB + ' / 40';
+  document.getElementById('rekapC').textContent = scoreC + ' / 30';
+  document.getElementById('rekapTotal').textContent = total;
+  sfxCorrect();
+}
+function resetEval(){
+  document.getElementById('tab-D').classList.remove('current');
+  startRoundA();
+}
+
+/* ===================== INIT ===================== */
+window.addEventListener('load', ()=>{
+  renderSim();
+  startRoundA();
+});
+</script>
+</body>
+</html>
